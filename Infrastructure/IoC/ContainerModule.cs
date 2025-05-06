@@ -16,8 +16,7 @@ public class ContainerModule : Autofac.Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterModule(new DbContextModule(_configuration));
-        builder.RegisterModule<AutoMapperModule>();
+        builder.RegisterModule<DbContextModule>();
         builder.RegisterModule<MediatrModule>();
         builder.RegisterModule<RepositoryModule>();
         builder.RegisterModule<ServiceModule>();

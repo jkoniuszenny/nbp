@@ -2,7 +2,11 @@ using API_Template.Middlewares;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FastEndpoints.Extensions;
+using Hangfire;
+using Hangfire.SqlServer;
+using Infrastructure.Extensions;
 using Infrastructure.IoC;
+using Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +15,7 @@ using NLog;
 using NLog.Web;
 using Prometheus;
 using Shared.Settings;
+using HangfireBasicAuthenticationFilter;
 using System.Text;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -26,12 +31,11 @@ try
     ConfigurationManager configuration = builder.Configuration;
 
     configuration.SetBasePath(environment.ContentRootPath)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                     .AddEnvironmentVariables();
 
     builder.Logging.ClearProviders();
-    builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+    builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
     builder.Host.UseNLog();
 
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -44,12 +48,6 @@ try
 
     builder.Host.UseNLog();
 
-    builder.Services.AddStackExchangeRedisCache(x =>
-    {
-        x.Configuration = configuration["Redis:ConnectionString"];
-    });
-
-
     builder.Services.AddCors();
 
     builder.Services.AddAuthorization();
@@ -58,19 +56,33 @@ try
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(options =>
+    .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = configuration["Token:IssuerKey"],
-            ValidAudience = configuration["Token:AudienceKey"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecretKey"]))
-        };
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = configuration["Token:IssuerKey"],
+        ValidAudience = configuration["Token:AudienceKey"],
+        IssuerSigningKeys = configuration["Token:SecretKeys"]?.Split(",", StringSplitOptions.TrimEntries).Select(s => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(s)))
     });
+
+
+    if (Convert.ToBoolean(configuration["Hangfire:Enabled"]))
+    {
+
+        GlobalConfiguration.Configuration
+            .UseNLogLogProvider();
+
+        builder.Services.AddHangfire(x => x
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseInMemoryStorage()
+        );
+
+        builder.Services.AddHangfireServer(options => options.Queues = ["nbp"]);
+    }
 
     builder.Services.Configure<JsonOptions>(options =>
     {
@@ -126,17 +138,35 @@ try
     app.RequestLog();
     app.ConfigureExceptionHandler();
 
-    app.UsePathBase("/-api");
-
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/-api/swagger/v1/swagger.json", "Api ");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api ");
 
     });
 
     app.UseMetricServer();
 
+
+    if (Convert.ToBoolean(configuration["Hangfire:Enabled"]))
+    {
+        var hangfireSettings = configuration.GetSettings<HangfireSettings>();
+
+        app.UseHangfireDashboard("/hangfire", new DashboardOptions
+        {
+            DashboardTitle = "Hangfire Api",
+            Authorization =
+            [
+                new HangfireCustomBasicAuthenticationFilter
+                {
+                    User = hangfireSettings.Username,
+                    Pass = hangfireSettings.Password
+                }
+            ]
+        });
+
+        HangfireSetUpProvider.RecurringJobSetUp(app, hangfireSettings);
+    }
 
     app.UseRouting();
 
@@ -156,7 +186,7 @@ try
 
 
     logger.Debug("Starting program");
-    app.Run();
+    await app.RunAsync();
 }
 catch (Exception exception)
 {

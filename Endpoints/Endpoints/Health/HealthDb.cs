@@ -17,10 +17,8 @@ public class HealthDb : FastEndpoint
     }
 
 
-    public async Task<IResult> ExecuteAsync(IMediator mediator)
-    {
-        return Results.Ok(await mediator.Send(new CheckDatabaseHealthQuery()));
-    }
+    public async Task<IResult> ExecuteAsync(IMediator mediator) 
+        => Results.Ok(await mediator.Send(new CheckDatabaseHealthQuery()));
 
 }
 

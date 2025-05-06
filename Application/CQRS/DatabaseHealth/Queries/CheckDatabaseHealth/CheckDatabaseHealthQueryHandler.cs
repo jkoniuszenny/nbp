@@ -2,7 +2,7 @@
 
 namespace Application.CQRS.DatabaseHealth.Queries.CheckDatabaseHealth;
 
-public class CheckDatabaseHealthQueryHandler : IRequestHandler<CheckDatabaseHealthQuery, string>
+internal class CheckDatabaseHealthQueryHandler : IRequestHandler<CheckDatabaseHealthQuery, string>
 {
     private readonly IHealthyRepository _repository;
 

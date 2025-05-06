@@ -6,10 +6,10 @@ namespace Infrastructure.Repositories
 {
     public class HealthyRepository : IHealthyRepository
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly DatabaseMongoContext _databaseContext;
 
         public HealthyRepository(
-            DatabaseContext databaseContext)
+            DatabaseMongoContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
         public async Task<string> GetHealthyAsync()
         {
             return
-                await _databaseContext.Database.CanConnectAsync()
+                await _databaseContext.CheckHealthAsync()
                 ? nameof(DatabaseHealthy.Healthy)
                 : nameof(DatabaseHealthy.Unhealthy);
         }

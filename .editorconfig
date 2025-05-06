@@ -31,6 +31,9 @@ dotnet_naming_style._fieldname.required_suffix =
 dotnet_naming_style._fieldname.word_separator = 
 dotnet_naming_style._fieldname.capitalization = camel_case
 
+# S2325: Methods and properties that don't access instance data should be static
+dotnet_diagnostic.S2325.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 
