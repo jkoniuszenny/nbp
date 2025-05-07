@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Infrastructure.IoC.Modules;
 using Microsoft.Extensions.Configuration;
+using TEMPLATE_short_name_pascal_case.Infrastructure.IoC.Modules;
 
 
 namespace Infrastructure.IoC;
@@ -22,6 +23,7 @@ public class ContainerModule : Autofac.Module
         builder.RegisterModule<ServiceModule>();
         builder.RegisterModule<ProviderModule>();
         builder.RegisterModule<NLogModule>();
+        builder.RegisterModule<ValidationsModule>();
         builder.RegisterModule(new SettingsModule(_configuration));
     }
 }

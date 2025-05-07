@@ -6,6 +6,8 @@ namespace Application.Interfaces.Repositories;
 
 public interface IAsyncRepository : IRepository
 {
+    IClientSessionHandle ClientSessionHandle { get; }
+
     Task<IQueryable<T>> AsQueryable<T>() where T : class;
     Task DeleteList<T>(IReadOnlyList<T> entities) where T : class;
     Task DeleteOne<T>(T entity) where T : class;

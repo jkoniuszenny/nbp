@@ -1,8 +1,7 @@
-﻿namespace Shared.Enums
+﻿namespace Shared.Enums;
+
+public enum DatabaseHealthy
 {
-    public enum DatabaseHealthy
-    {
-        Healthy,
-        Unhealthy
-    }
+    Healthy,
+    Unhealthy
 }

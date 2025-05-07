@@ -3,8 +3,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FastEndpoints.Extensions;
 using Hangfire;
-using Hangfire.SqlServer;
-using Infrastructure.Extensions;
+using HangfireBasicAuthenticationFilter;
 using Infrastructure.IoC;
 using Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,9 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
-using Prometheus;
+using Shared.Extensions;
 using Shared.Settings;
-using HangfireBasicAuthenticationFilter;
 using System.Text;
 
 var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -39,7 +37,6 @@ try
     builder.Host.UseNLog();
 
     builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-
 
     builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
     {
@@ -66,7 +63,6 @@ try
         ValidAudience = configuration["Token:AudienceKey"],
         IssuerSigningKeys = configuration["Token:SecretKeys"]?.Split(",", StringSplitOptions.TrimEntries).Select(s => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(s)))
     });
-
 
     if (Convert.ToBoolean(configuration["Hangfire:Enabled"]))
     {
@@ -133,20 +129,26 @@ try
         c.AllowAnyOrigin();
     });
 
+    app.ConfigureExceptionHandler();
+
+    var responsetimesettings = app.Services.GetService<ResponseTimeSettings>();
+    if (responsetimesettings?.Enabled ?? false)
+    {
+        app.ConfigureResponseTime();
+    }
+
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api "));
+
+    app.UseHsts();
+
+    app.UseAuthorization();
+    app.UseRouting();
+    app.UseAuthentication();
+
     app.ConfigureBuffer();
     app.UsernameLog();
     app.RequestLog();
-    app.ConfigureExceptionHandler();
-
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api ");
-
-    });
-
-    app.UseMetricServer();
-
 
     if (Convert.ToBoolean(configuration["Hangfire:Enabled"]))
     {
@@ -168,22 +170,7 @@ try
         HangfireSetUpProvider.RecurringJobSetUp(app, hangfireSettings);
     }
 
-    app.UseRouting();
-
-    var responsetimesettings = app.Services.GetService<ResponseTimeSettings>();
-    if (responsetimesettings?.Enabled ?? false)
-    {
-        app.ConfigureResponseTime();
-    }
-
-    app.UseHsts();
-
-
-    app.UseAuthorization();
-    app.UseAuthentication();
-
     app.UseMinimalEndpoints(c => c.ProjectName = "EndpointsController");
-
 
     logger.Debug("Starting program");
     await app.RunAsync();

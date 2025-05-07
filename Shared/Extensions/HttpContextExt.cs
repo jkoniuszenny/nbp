@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 
 
-namespace Infrastructure.Extensions;
+namespace Shared.Extensions;
 
-public static class HttpContextExtensions
+public static class HttpContextExt
 {
     public static string GetToken(this IHttpContextAccessor httpContent)
     {

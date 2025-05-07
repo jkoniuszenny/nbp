@@ -26,8 +26,8 @@ public static class HangfireSetUpProvider
         if (hangfireSettings.EnabledNbpSync)
             RecurringJob.AddOrUpdate(
                 "NbpSync",
-                () => currencyRatesProvider.SaveActualRates().Wait(), // Ensure the Task is awaited or completed
-                hangfireSettings.NbpSyncCronExpression.ToString(),   // Convert int to string
+                () => currencyRatesProvider.SaveActualRates(), // Ensure the Task is awaited or completed
+                hangfireSettings.NbpSyncCronExpression,   // Convert int to string
                 new RecurringJobOptions() { TimeZone = TimeZoneInfo.Local });
     }
 }

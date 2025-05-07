@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Infrastructure.Extensions;
+namespace Shared.Extensions;
 
-public static class SettingsExtensions
+public static class SettingsExt
 {
     public static T GetSettings<T>(this IConfiguration configuration) where T : new()
     {

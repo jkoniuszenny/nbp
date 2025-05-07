@@ -1,56 +1,55 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
 
-namespace Shared.Common
+namespace Shared.Common;
+
+public class QueryStringParser<T> where T : class, new()
 {
-    public class QueryStringParser<T> where T : class, new()
+    public static ValueTask<T?> BindAsync(HttpContext context)
     {
-        public static ValueTask<T?> BindAsync(HttpContext context)
+        var result = new T();
+
+        var tmp = result.GetType();
+
+        foreach (var item in tmp.GetProperties())
         {
-            var result = new T();
+            Type tProp = item.PropertyType;
+            string tName = item.Name;
 
-            var tmp = result.GetType();
+            var propertyValue = context.Request.Query[tName].Count == 0 ? null : context.Request.Query[tName].ToString();
 
-            foreach (var item in tmp.GetProperties())
+            if (tProp.IsGenericType && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
             {
-                Type tProp = item.PropertyType;
-                string tName = item.Name;
-
-                var propertyValue = context.Request.Query[tName].Count == 0 ? null : context.Request.Query[tName].ToString();
-
-                if (tProp.IsGenericType && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                if (propertyValue == null || propertyValue == "null")
                 {
-                    if (propertyValue == null || propertyValue == "null")
-                    {
-                        item.SetValue(result, null, null);
-                        continue;
-                    }
+                    item.SetValue(result, null, null);
+                    continue;
+                }
 
-                    tProp = new NullableConverter(tProp).UnderlyingType;
-                }
-                if (tProp.IsEnum)
-                {
-                    Enum.TryParse(tProp, propertyValue, out var enumVal);
-                    item.SetValue(result, enumVal, null);
-
-                }
-                else
-                {
-                    var type = Convert.ChangeType(propertyValue, tProp);
-                    item.SetValue(result, type, null);
-                }
+                tProp = new NullableConverter(tProp).UnderlyingType;
             }
+            if (tProp.IsEnum)
+            {
+                Enum.TryParse(tProp, propertyValue, out var enumVal);
+                item.SetValue(result, enumVal, null);
 
-            return ValueTask.FromResult<T?>(result);
+            }
+            else
+            {
+                var type = Convert.ChangeType(propertyValue, tProp);
+                item.SetValue(result, type, null);
+            }
         }
 
-        public static bool TryParse(string? value, out T? output)
-        {
-            output = new T();
+        return ValueTask.FromResult<T?>(result);
+    }
 
-            value?.TrimStart('(').TrimEnd(')');
+    public static bool TryParse(string? value, out T? output)
+    {
+        output = new T();
 
-            return false;
-        }
+        value?.TrimStart('(').TrimEnd(')');
+
+        return false;
     }
 }

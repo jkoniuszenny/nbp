@@ -24,6 +24,8 @@ public class BaseMongoRepository: IAsyncRepository
     protected readonly DatabaseMongoSettings _databaseSettings;
     private readonly IUserProvider _userProvider;
 
+    public IClientSessionHandle ClientSessionHandle => _databaseContext.ClientSessionHandle;
+
     public BaseMongoRepository(
         DatabaseMongoContext databaseContext,
         DatabaseMongoSettings databaseSettings,

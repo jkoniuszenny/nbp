@@ -1,5 +1,4 @@
-﻿using Application.Exceptions;
-using Shared.GlobalResponse;
+﻿using Shared.GlobalResponse;
 using Shared.NLog.Interfaces;
 using System.Net;
 using System.Text.Json;
@@ -48,10 +47,6 @@ public class ExceptionHandlerMiddleware
                 break;
             case Exception when exceptionType == typeof(Exception):
                 statusCode = HttpStatusCode.InternalServerError;
-                break;
-            case Exception when exceptionType == typeof(ValidationModelException):
-                statusCode = HttpStatusCode.BadRequest;
-                validations = ((ValidationModelException)exception).Validations;
                 break;
         }
 

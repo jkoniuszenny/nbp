@@ -7,31 +7,18 @@ using System.Threading.Tasks;
 
 namespace Domain.Api;
 
-public class NbpTableB
-{
+public record NbpTableB
+(
+     string Table,
+     string No,
+     DateTime EffectiveDate,
+     List<Rate> Rates
 
-    [JsonPropertyName("table")]
-    public string Table { get; set; }
+);
 
-    [JsonPropertyName("no")]
-    public string No { get; set; }
-
-    [JsonPropertyName("effectiveDate")]
-    public string EffectiveDate { get; set; }
-
-    [JsonPropertyName("rates")]
-    public List<Rate> Rates { get; set; }
-
-}
-
-public class Rate
-{
-    [JsonPropertyName("currency")]
-    public string Currency { get; set; }
-
-    [JsonPropertyName("code")]
-    public string Code { get; set; }
-
-    [JsonPropertyName("mid")]
-    public double Mid { get; set; }
-}
+public record Rate
+(
+     string Currency,
+     string Code,
+     double Mid
+);

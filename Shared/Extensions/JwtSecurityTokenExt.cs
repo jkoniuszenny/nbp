@@ -1,8 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
-namespace Infrastructure.Extensions;
+namespace Shared.Extensions;
 
-public static class JwtSecurityTokenExtensions
+public static class JwtSecurityTokenExt
 {
     public static string GetClaims(this JwtSecurityToken token, string claimsName, string ifNotFoundReturn = "")
     {

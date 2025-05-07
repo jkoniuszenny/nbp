@@ -1,6 +1,6 @@
 ﻿namespace Shared.Settings;
 
-public class TokenSettings
+public class TokenSettings: ISettings
 {
     public string SecretKey { get; set; }
     public string RefreshKey { get; set; }

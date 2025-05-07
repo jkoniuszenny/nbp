@@ -10,7 +10,7 @@ public class MediatrModule : Autofac.Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        var assembly = typeof(MediatRAutoFacMarker)
+        var assembly = typeof(IMediatrAutoFacMarker)
             .GetTypeInfo()
             .Assembly;
 

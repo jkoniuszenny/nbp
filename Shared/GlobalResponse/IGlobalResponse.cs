@@ -1,28 +1,31 @@
 ﻿namespace Shared.GlobalResponse;
 
-public interface IGlobalResponse<T>
+public interface IGlobalResponse
 {
-    bool Succeded { get; set; }
-    Payload<T>? Payload { get; set; }
-    Error? Error { get; set; }
+    bool Succeded { get; }
+    Error Error { get; }
+    IEnumerable<string> ValidationErrors { get; }
+}
+
+public interface IGlobalResponse<T> : IGlobalResponse
+{
+    Payload<T> Payload { get; }
 }
 
 public interface IError
 {
-    public int Code { get; set; }
-    public string? Message { get; set; }
-    public IEnumerable<string>? ValidationErrors { get; set; }
+    int Code { get; }
+    string Message { get; }
 }
 
 public interface IPayload<T>
 {
-    public T? Data { get; set; }
-    public int? Page { get; set; }
-    public int? PageSize { get; set; }
-    public int? Total { get; set; }
+    T Data { get; }
+    int? Page { get; }
+    int? PageSize { get; }
+    int? Total { get; }
 }
 
 public interface INullClass
 {
-
 }

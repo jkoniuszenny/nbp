@@ -1,0 +1,54 @@
+﻿@EndpointsController_HostAddress = http://localhost:5217
+@WalletName = Nowość
+@WalletId = 681b3bbfad62d795f3095501
+@Code = MGA
+
+//Nowy portfel
+POST {{EndpointsController_HostAddress}}/WalletCreate
+Content-Type: application/json
+{
+  "name": "{{WalletName}}",
+  "initValue": [
+    {
+      "code": "{{Code}}",
+      "value": 10
+    }
+  ]
+}
+
+###
+
+
+//Lista wszystkich portfeli
+GET {{EndpointsController_HostAddress}}/WalletGet
+
+###
+
+
+//Konkretny portfel
+GET {{EndpointsController_HostAddress}}/WalletGet?walletname={{WalletName}}
+
+###
+
+
+//Dodanie środków do portfela
+POST {{EndpointsController_HostAddress}}/NewTransactionAdd
+Content-Type: application/json
+{
+  "walletId": "{{WalletId}}",
+  "code": "{{Code}}",
+  "value": 50
+}
+
+###
+
+
+PUT {{EndpointsController_HostAddress}}/NewTransactionSubtract
+Content-Type: application/json
+{
+  "walletId": "{{WalletId}}",
+  "code": "{{Code}}",
+  "value": 100
+}
+
+###

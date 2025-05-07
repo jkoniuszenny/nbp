@@ -8,21 +8,34 @@ namespace Infrastructure.Database;
 public class DatabaseMongoContext
 {
     private readonly IMongoDatabase _database;
+    public readonly IClientSessionHandle ClientSessionHandle;
 
     public DatabaseMongoContext(
         DatabaseMongoSettings settings
         )
     {
-        var runner = MongoDbRunner.Start();      
+        var runner = MongoDbRunner.Start(singleNodeReplSet:true);      
 
         var client = new MongoClient(runner.ConnectionString);
         _database = client.GetDatabase(settings.DatabaseName);
+
+        var sessionOptions = new ClientSessionOptions
+        {
+            DefaultTransactionOptions = new TransactionOptions(
+        readConcern: ReadConcern.Majority,
+        writeConcern: WriteConcern.WMajority,
+        readPreference: ReadPreference.Primary)
+        };
+
+        ClientSessionHandle = _database.Client.StartSession(sessionOptions);
+
     }
 
     public async Task<IMongoCollection<T>> GetCollection<T>(string collectionName)
     {
         return await Task.FromResult(_database.GetCollection<T>(collectionName));
     }
+
 
     public async Task<bool> CheckHealthAsync()
     {

@@ -1,8 +1,8 @@
 ﻿
 using Autofac;
-using Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 using Shared.Settings;
+using Shared.Extensions;
 
 namespace Infrastructure.IoC.Modules;
 
@@ -16,17 +16,6 @@ public class SettingsModule : Autofac.Module
     }
 
     protected override void Load(ContainerBuilder builder)
-    {
-        builder.RegisterInstance(_configuration.GetSettings<DatabaseSqlSettings>())
-                .SingleInstance();
-        builder.RegisterInstance(_configuration.GetSettings<DatabaseMongoSettings>())
-                .SingleInstance();
-        builder.RegisterInstance(_configuration.GetSettings<RedisSettings>())
-                .SingleInstance();
-        builder.RegisterInstance(_configuration.GetSettings<ResponseTimeSettings>())
-                .SingleInstance();
-        builder.RegisterInstance(_configuration.GetSettings<TokenSettings>())
-                .SingleInstance();
-    }
+        => builder.RegisterSettings(_configuration, typeof(ISettings), "Shared");
 }
 

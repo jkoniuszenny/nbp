@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EndpointsController</name>
+    </assembly>
+    <members>
+        <member name="M:EndpointsController.Endpoints.Transaction.NewTransactionAdd.ExecuteAsync(MediatR.IMediator,Application.CQRS.Transaction.Commands.NewTransaction.NewTransactionAddInput)">
+            <summary>
+            NewTransaction
+            </summary>
+            <param name="mediator"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EndpointsController.Endpoints.Transaction.NewTransactionSubtract.ExecuteAsync(MediatR.IMediator,Application.CQRS.Transaction.Commands.NewTransactionSubtract.NewTransactionSubtractInput)">
+            <summary>
+            NewTransactionSubtract
+            </summary>
+            <param name="mediator"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EndpointsController.Endpoints.Wallet.WalletCreate.ExecuteAsync(MediatR.IMediator,Application.CQRS.Wallet.Commands.WalletCreate.WalletCreateInput)">
+            <summary>
+            WalletCreate
+            </summary>
+            <param name="mediator"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EndpointsController.Endpoints.Wallet.WalletGet.ExecuteAsync(MediatR.IMediator,Application.CQRS.Wallet.Queries.WalletGet.WalletGetQuery,Application.CQRS.Wallet.Queries.WalletGet.WalletGetQuery)">
+            <summary>
+            WalletGet
+            </summary>
+            <param name="mediator"></param>
+            <param name="fromQuery"></param>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
