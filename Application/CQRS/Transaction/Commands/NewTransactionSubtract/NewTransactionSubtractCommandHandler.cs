@@ -36,14 +36,15 @@ internal sealed class NewTransactionSubtractCommandHandler : IRequestHandler<New
             TransactionType = TransactionType.Subtract
         };
 
-
         var wallet = await (await _asyncRepository.AsQueryable<Wallets>()).
             Where(w => w.Id == request.WalletId)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-        var substructCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.Code);
-        substructCurrenceInWallet!.Value -= roundedValue;
-
+        wallet.SubtractCurrency(new Currency
+        {
+            Code = request.Code,
+            Value = roundedValue
+        });
 
         _asyncRepository.ClientSessionHandle.StartTransaction();
 

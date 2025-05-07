@@ -1,6 +1,6 @@
 ﻿@EndpointsController_HostAddress = http://localhost:5217
 @WalletName = Nowość
-@WalletId = 681b47e5401d5e1c0c3af39b
+@WalletId = 681b4c88f82c2ff5140be4eb
 @Code = MGA
 @CodeTo = AFN
 

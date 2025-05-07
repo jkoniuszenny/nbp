@@ -2,7 +2,6 @@
 using Domain.Entities;
 using MongoDB.Driver.Linq;
 using Shared.Settings;
-using static MongoDB.Driver.WriteConcern;
 
 namespace Application.CQRS.Transaction.Commands.NewTransactionConvert;
 
@@ -48,27 +47,18 @@ internal sealed class NewTransactionConvertCommandHandler : IRequestHandler<NewT
             2, 
             MidpointRounding.ToEven);
 
-
-        var substructCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.CodeFrom);
-        substructCurrenceInWallet!.Value -= request.Value;
-
-
-        var addedCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.CodeTo);
-
-        if (addedCurrenceInWallet is { })
-            addedCurrenceInWallet.Value += convertedValue;
-        else
+        wallet.SubtractCurrency(new Currency
         {
-            var newCurrency = new Currency
-            {
-                Name = _currencySettings.Codes.First(f => f.Code == request.CodeTo).Name,
-                Code = request.CodeTo,
-                Value = convertedValue
-            };
+            Code = request.CodeFrom,
+            Value = request.Value
+        });
 
-            wallet.Currencies = [.. wallet.Currencies, newCurrency];
-        }
-
+        wallet.AddCurrency(new Currency
+        {
+            Name = _currencySettings.Codes.First(f => f.Code == request.CodeTo).Name,
+            Code = request.CodeTo,
+            Value = convertedValue
+        });
 
         var newTransaction = new Transactions
         {

@@ -48,22 +48,14 @@ internal sealed class NewTransactionAddCommandHandler : IRequestHandler<NewTrans
             Where(w => w.Id == request.WalletId)
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-        var addedCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.Code);
-
-        if (addedCurrenceInWallet is { })
-            addedCurrenceInWallet.Value += roundedValue;
-        else
+        wallet.AddCurrency(new Currency
         {
-            var newCurrency = new Currency
-            {
-                Name = _currencySettings.Codes.First(f => f.Code == request.Code).Name,
-                Code = request.Code,
-                Value = roundedValue
-            };
+            Name = _currencySettings.Codes.First(f => f.Code == request.Code).Name,
+            Code = request.Code,
+            Value = roundedValue
+        });
 
-            wallet.Currencies = [.. wallet.Currencies, newCurrency];
-        }
-
+       
         _asyncRepository.ClientSessionHandle.StartTransaction();
 
         try
