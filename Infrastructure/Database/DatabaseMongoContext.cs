@@ -22,9 +22,9 @@ public class DatabaseMongoContext
         var sessionOptions = new ClientSessionOptions
         {
             DefaultTransactionOptions = new TransactionOptions(
-        readConcern: ReadConcern.Majority,
-        writeConcern: WriteConcern.WMajority,
-        readPreference: ReadPreference.Primary)
+            readConcern: ReadConcern.Majority,
+            writeConcern: WriteConcern.WMajority,
+            readPreference: ReadPreference.Primary)
         };
 
         ClientSessionHandle = _database.Client.StartSession(sessionOptions);
