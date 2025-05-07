@@ -1,14 +1,6 @@
-﻿using Application.Interfaces.Providers;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
-using MediatR;
 using Shared.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Wallet.Commands.WalletCreate;
 

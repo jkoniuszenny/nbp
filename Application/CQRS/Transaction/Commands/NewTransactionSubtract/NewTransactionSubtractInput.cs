@@ -4,5 +4,5 @@ public record NewTransactionSubtractInput
 (
     string WalletId,
     string Code,
-    double Value
+    decimal Value
 );

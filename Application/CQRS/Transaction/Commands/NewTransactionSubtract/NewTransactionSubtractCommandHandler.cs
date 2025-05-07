@@ -1,16 +1,6 @@
-﻿using Application.CQRS.Transaction.Commands.NewTransaction;
-using Application.Interfaces.Providers;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
-using MediatR;
 using MongoDB.Driver.Linq;
-using Shared.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Transaction.Commands.NewTransactionSubtract;
 
@@ -33,11 +23,16 @@ internal sealed class NewTransactionSubtractCommandHandler : IRequestHandler<New
         if (!validationResult.IsValid)
             return await GlobalResponse.ValidationsAsync(validationResult.Errors.Select(x => x.ErrorMessage));
 
+        var roundedValue = Math.Round(
+           request.Value,
+           2,
+           MidpointRounding.ToEven);
+
         var newTransaction = new Transactions
         {
             WalletId = request.WalletId,
-            Value = request.Value,
-            CurrencyCode = request.Code,
+            Value = roundedValue,
+            CurrencyCodeTo = request.Code,
             TransactionType = TransactionType.Subtract
         };
 
@@ -47,7 +42,7 @@ internal sealed class NewTransactionSubtractCommandHandler : IRequestHandler<New
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         var substructCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.Code);
-        substructCurrenceInWallet!.Value -= request.Value;
+        substructCurrenceInWallet!.Value -= roundedValue;
 
 
         _asyncRepository.ClientSessionHandle.StartTransaction();
@@ -58,7 +53,6 @@ internal sealed class NewTransactionSubtractCommandHandler : IRequestHandler<New
             await _asyncRepository.UpdateOne(wallet);
 
             await _asyncRepository.ClientSessionHandle.CommitTransactionAsync(cancellationToken);
-
 
         }
         catch

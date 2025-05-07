@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
 
 namespace Infrastructure.IoC.Modules;
 

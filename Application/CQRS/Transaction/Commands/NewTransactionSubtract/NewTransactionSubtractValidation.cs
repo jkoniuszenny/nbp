@@ -1,13 +1,7 @@
 ﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
-using FluentValidation;
 using MongoDB.Driver.Linq;
 using Shared.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Transaction.Commands.NewTransactionSubtract;
 
@@ -37,7 +31,7 @@ public class NewTransactionSubtractValidation : AbstractValidator<NewTransaction
         await (await _repository.AsQueryable<Wallets>())
             .AnyAsync(a => a.Id == id);
 
-    private async Task<bool> IsCurrencyAvailable(string id, string code, double value) =>
+    private async Task<bool> IsCurrencyAvailable(string id, string code, decimal value) =>
         await (await _repository.AsQueryable<Wallets>())
             .AnyAsync(a => a.Id == id && a.Currencies.Any(e => e.Value <= value && e.Code == code));
 

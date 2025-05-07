@@ -1,10 +1,6 @@
 ﻿using Domain.Common;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities;
 
@@ -20,5 +16,6 @@ public class Rates
 {
     public string Currency { get; set; }
     public string Code { get; set; }
-    public double Mid { get; set; }
+    [BsonRepresentation(BsonType.Decimal128)]
+    public decimal Mid { get; set; }
 }

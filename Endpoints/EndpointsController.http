@@ -1,7 +1,8 @@
 ﻿@EndpointsController_HostAddress = http://localhost:5217
 @WalletName = Nowość
-@WalletId = 681b3bbfad62d795f3095501
+@WalletId = 681b47e5401d5e1c0c3af39b
 @Code = MGA
+@CodeTo = AFN
 
 //Nowy portfel
 POST {{EndpointsController_HostAddress}}/WalletCreate
@@ -43,12 +44,26 @@ Content-Type: application/json
 ###
 
 
+//Wypłata środków z portfela
 PUT {{EndpointsController_HostAddress}}/NewTransactionSubtract
 Content-Type: application/json
 {
   "walletId": "{{WalletId}}",
   "code": "{{Code}}",
   "value": 100
+}
+
+
+###
+
+//Przewalutowanie środków
+PUT {{EndpointsController_HostAddress}}/NewTransactionConvert
+Content-Type: application/json
+{
+  "walletId": "{{WalletId}}",
+  "codeFrom": "{{Code}}",
+  "codeTo": "{{CodeTo}}",
+  "value": 30
 }
 
 ###

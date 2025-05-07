@@ -4,9 +4,17 @@
         <name>EndpointsController</name>
     </assembly>
     <members>
-        <member name="M:EndpointsController.Endpoints.Transaction.NewTransactionAdd.ExecuteAsync(MediatR.IMediator,Application.CQRS.Transaction.Commands.NewTransaction.NewTransactionAddInput)">
+        <member name="M:EndpointsController.Endpoints.Transaction.NewTransactionAdd.ExecuteAsync(MediatR.IMediator,Application.CQRS.Transaction.Commands.NewTransactionAdd.NewTransactionAddInput)">
             <summary>
-            NewTransaction
+            NewTransactionAdd
+            </summary>
+            <param name="mediator"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EndpointsController.Endpoints.Transaction.NewTransactionConvert.ExecuteAsync(MediatR.IMediator,Application.CQRS.Transaction.Commands.NewTransactionConvert.NewTransactionConvertInput)">
+            <summary>
+            NewTransactionConvert
             </summary>
             <param name="mediator"></param>
             <param name="input"></param>

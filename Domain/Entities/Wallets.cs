@@ -1,10 +1,6 @@
 ﻿using Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities;
 
@@ -18,5 +14,6 @@ public class Currency
 {
     public string Name { get; set; }
     public string Code { get; set; }
-    public double Value { get; set; }
+    [BsonRepresentation(BsonType.Decimal128)]
+    public decimal Value { get; set; }
 }

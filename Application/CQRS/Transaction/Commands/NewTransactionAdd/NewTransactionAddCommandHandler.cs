@@ -1,19 +1,10 @@
-﻿using Application.CQRS.Wallet.Commands.WalletCreate;
-using Application.Interfaces.Providers;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
-using MediatR;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Shared.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Application.CQRS.Transaction.Commands.NewTransaction;
+namespace Application.CQRS.Transaction.Commands.NewTransactionAdd;
 
 internal sealed class NewTransactionAddCommandHandler : IRequestHandler<NewTransactionAddCommand, GlobalResponse>
 {
@@ -38,11 +29,17 @@ internal sealed class NewTransactionAddCommandHandler : IRequestHandler<NewTrans
         if (!validationResult.IsValid)
             return await GlobalResponse.ValidationsAsync(validationResult.Errors.Select(x => x.ErrorMessage));
 
+
+        var roundedValue = Math.Round(
+            request.Value,
+            2,
+            MidpointRounding.ToEven);
+
         var newTransaction = new Transactions
         {
             WalletId = request.WalletId,
-            Value = request.Value,
-            CurrencyCode = request.Code,
+            Value = roundedValue,
+            CurrencyCodeTo = request.Code,
             TransactionType = TransactionType.Add
         };
 
@@ -54,14 +51,14 @@ internal sealed class NewTransactionAddCommandHandler : IRequestHandler<NewTrans
         var addedCurrenceInWallet = wallet.Currencies.FirstOrDefault(c => c.Code == request.Code);
 
         if (addedCurrenceInWallet is { })
-            addedCurrenceInWallet.Value += request.Value;
+            addedCurrenceInWallet.Value += roundedValue;
         else
         {
             var newCurrency = new Currency
             {
                 Name = _currencySettings.Codes.First(f => f.Code == request.Code).Name,
                 Code = request.Code,
-                Value = request.Value
+                Value = roundedValue
             };
 
             wallet.Currencies = [.. wallet.Currencies, newCurrency];

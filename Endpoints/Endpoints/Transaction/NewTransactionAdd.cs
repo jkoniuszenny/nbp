@@ -1,8 +1,7 @@
-﻿using Application.CQRS.Transaction.Commands.NewTransaction;
+﻿using Application.CQRS.Transaction.Commands.NewTransactionAdd;
 using FastEndpoints.Configuration;
 using FastEndpoints.Enum;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace EndpointsController.Endpoints.Transaction;
@@ -19,7 +18,7 @@ public class NewTransactionAdd : FastEndpoint
     }
 
     /// <summary>
-    /// NewTransaction
+    /// NewTransactionAdd
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="input"></param>

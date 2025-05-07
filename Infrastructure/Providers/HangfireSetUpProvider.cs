@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces.Providers;
-using Application.Interfaces.Providers.Api;
 using Hangfire;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Builder;

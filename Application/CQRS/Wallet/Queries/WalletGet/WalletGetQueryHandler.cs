@@ -1,14 +1,6 @@
-﻿using Application.Interfaces.Providers;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
-using MediatR;
 using MongoDB.Driver.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Wallet.Queries.WalletGet;
 
@@ -32,8 +24,8 @@ internal sealed class WalletGetQueryHandler : IRequestHandler<WalletGetQuery, Gl
 
 
         var result = wallets.Select(x => new WalletGetOutput(
-            x.Id,
             x.Name,
+            x.Id,
             x.Currencies.Select(c=> new WalletGetCurrency(
                 c.Name,
                 c.Code,

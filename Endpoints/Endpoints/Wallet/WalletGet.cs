@@ -2,7 +2,6 @@
 using FastEndpoints.Configuration;
 using FastEndpoints.Enum;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

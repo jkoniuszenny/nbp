@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Infrastructure.IoC.Modules;
 using Microsoft.Extensions.Configuration;
-using TEMPLATE_short_name_pascal_case.Infrastructure.IoC.Modules;
 
 
 namespace Infrastructure.IoC;

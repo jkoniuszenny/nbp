@@ -1,4 +1,4 @@
-﻿using Application.CQRS.Transaction.Commands.NewTransactionWithdrawPln;
+﻿using Application.CQRS.Transaction.Commands.NewTransactionConvert;
 using FastEndpoints.Configuration;
 using FastEndpoints.Enum;
 using MediatR;
@@ -7,27 +7,27 @@ using Microsoft.AspNetCore.Http;
 
 namespace EndpointsController.Endpoints.Transaction;
 
-public class NewTransactionWithdrawPln : FastEndpoint
+public class NewTransactionConvert : FastEndpoint
 {
     //created 5/7/2025 12:58:34 PM by Jakub.Koniuszenny
-    public NewTransactionWithdrawPln()
+    public NewTransactionConvert()
     {
         Method = HttpRequestMethodTypes.Put;
-        Url = "/NewTransactionWithdrawPln";
-        Name = "NewTransactionWithdrawPln";
+        Url = "/NewTransactionConvert";
+        Name = "NewTransactionConvert";
         Tag = "Transaction";
     }
 
     /// <summary>
-    /// NewTransactionWithdrawPln
+    /// NewTransactionConvert
     /// </summary>
     /// <param name="mediator"></param>
     /// <param name="input"></param>
     /// <returns></returns>
-    [Authorize]
-    public async Task<IResult> ExecuteAsync(IMediator mediator, NewTransactionWithdrawPlnInput input)
+    //[Authorize]
+    public async Task<IResult> ExecuteAsync(IMediator mediator, NewTransactionConvertInput input)
     {
-        var result = await mediator.Send(new NewTransactionWithdrawPlnCommand(input));
+        var result = await mediator.Send(new NewTransactionConvertCommand(input));
 
         return Results.Ok(result);
     }

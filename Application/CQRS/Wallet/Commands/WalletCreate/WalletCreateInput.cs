@@ -9,5 +9,5 @@ public record WalletCreateInput
 public record WalletCurrency
 (
     string Code,
-    double Value
+    decimal Value
 );

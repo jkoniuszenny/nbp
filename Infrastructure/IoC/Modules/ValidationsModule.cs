@@ -3,7 +3,7 @@ using Application.CQRS;
 using Autofac;
 using FluentValidation;
 
-namespace TEMPLATE_short_name_pascal_case.Infrastructure.IoC.Modules;
+namespace Infrastructure.IoC.Modules;
 
 public class ValidationsModule: Autofac.Module
 {

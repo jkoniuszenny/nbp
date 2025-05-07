@@ -11,5 +11,5 @@ public record WalletGetCurrency
 (
     string Name,
     string Code,
-    double Value
+    decimal Value
 );

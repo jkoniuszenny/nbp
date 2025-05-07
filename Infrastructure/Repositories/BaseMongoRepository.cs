@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces.Providers;
 using Application.Interfaces.Repositories;
 using Infrastructure.Database;
-using Infrastructure.Providers;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
